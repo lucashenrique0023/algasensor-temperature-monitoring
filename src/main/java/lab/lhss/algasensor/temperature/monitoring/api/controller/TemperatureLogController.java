@@ -1,7 +1,7 @@
 package lab.lhss.algasensor.temperature.monitoring.api.controller;
 
 import io.hypersistence.tsid.TSID;
-import lab.lhss.algasensor.temperature.monitoring.api.model.TemperatureLogOutput;
+import lab.lhss.algasensor.temperature.monitoring.api.model.TemperatureLogData;
 import lab.lhss.algasensor.temperature.monitoring.domain.model.SensorId;
 import lab.lhss.algasensor.temperature.monitoring.domain.model.TemperatureLog;
 import lab.lhss.algasensor.temperature.monitoring.domain.repository.TemperatureLogRepository;
@@ -22,13 +22,13 @@ public class TemperatureLogController {
     private final TemperatureLogRepository temperatureLogRepository;
 
     @GetMapping
-    public Page<TemperatureLogOutput> search(@PathVariable TSID sensorId,
-                                             @PageableDefault Pageable pageable) {
+    public Page<TemperatureLogData> search(@PathVariable TSID sensorId,
+                                           @PageableDefault Pageable pageable) {
         Page<TemperatureLog> temperatureLogs = temperatureLogRepository.findAllBySensorId(
                 new SensorId(sensorId), pageable);
 
         return temperatureLogs.map(temperatureLog ->
-                TemperatureLogOutput.builder()
+                TemperatureLogData.builder()
                         .id(temperatureLog.getId().getValue())
                         .value(temperatureLog.getValue())
                         .registeredAt(temperatureLog.getRegisteredAt())
