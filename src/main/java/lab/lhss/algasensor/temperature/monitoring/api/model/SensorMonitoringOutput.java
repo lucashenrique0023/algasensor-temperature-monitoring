@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 
 @Data
 @Builder
-public class SensorMonitoringOuput {
+public class SensorMonitoringOutput {
     private TSID id;
     private Double lastTemperature;
     private OffsetDateTime updatedAt;

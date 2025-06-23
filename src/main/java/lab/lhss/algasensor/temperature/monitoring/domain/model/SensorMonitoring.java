@@ -23,4 +23,9 @@ public class SensorMonitoring {
     private Double lastTemperature;
     private OffsetDateTime updatedAt;
     private Boolean enabled;
+
+    public boolean isEnabled() {
+        return Boolean.TRUE.equals(enabled);
+    }
+
 }

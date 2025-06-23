@@ -1,7 +1,7 @@
 package lab.lhss.algasensor.temperature.monitoring.api.controller;
 
 import io.hypersistence.tsid.TSID;
-import lab.lhss.algasensor.temperature.monitoring.api.model.SensorMonitoringOuput;
+import lab.lhss.algasensor.temperature.monitoring.api.model.SensorMonitoringOutput;
 import lab.lhss.algasensor.temperature.monitoring.domain.model.SensorId;
 import lab.lhss.algasensor.temperature.monitoring.domain.model.SensorMonitoring;
 import lab.lhss.algasensor.temperature.monitoring.domain.repository.SensorMonitoringRepository;
@@ -21,10 +21,10 @@ public class SensorMonitoringController {
     private final SensorMonitoringRepository sensorMonitoringRepository;
 
     @GetMapping
-    public SensorMonitoringOuput getDetail(@PathVariable TSID sensorId) {
+    public SensorMonitoringOutput getDetail(@PathVariable TSID sensorId) {
         SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
 
-        return SensorMonitoringOuput.builder()
+        return SensorMonitoringOutput.builder()
                 .id(sensorMonitoring.getId().getValue())
                 .enabled(sensorMonitoring.getEnabled())
                 .lastTemperature(sensorMonitoring.getLastTemperature())
