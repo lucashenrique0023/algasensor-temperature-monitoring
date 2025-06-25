@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
-import static lab.lhss.algasensor.temperature.monitoring.infrastructure.rabbitmq.RabbitMQConfig.TEMPERATURE_QUEUE;
+import static lab.lhss.algasensor.temperature.monitoring.infrastructure.rabbitmq.RabbitMQConfig.*;
 
 @Slf4j
 @Component
@@ -20,10 +20,17 @@ public class RabbitMQListener {
 
     private final TemperatureMonitoringService temperatureMonitoringService;
 
-    @RabbitListener(queues = TEMPERATURE_QUEUE, concurrency = "2-3")
+    @RabbitListener(queues = TEMPERATURE_PROCESS_QUEUE, concurrency = "2-3")
     @SneakyThrows
-    public void handle(@Payload TemperatureLogData temperatureLogData) {
+    public void handleTemperatureProcess(@Payload TemperatureLogData temperatureLogData) {
         temperatureMonitoringService.processTemperatureReading(temperatureLogData);
+        Thread.sleep(Duration.ofSeconds(5).toMillis());
+    }
+
+    @RabbitListener(queues = TEMPERATURE_ALERT_QUEUE, concurrency = "2-3")
+    @SneakyThrows
+    public void handleTemperatureAlert(@Payload TemperatureLogData temperatureLogData) {
+        log.info("Temperature alert SensorID: {} , Temp: {}", temperatureLogData.getSensorId(), temperatureLogData.getValue());
         Thread.sleep(Duration.ofSeconds(5).toMillis());
     }
 
