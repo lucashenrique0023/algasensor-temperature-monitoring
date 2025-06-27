@@ -8,11 +8,17 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String TEMPERATURE_PROCESS_QUEUE = "temperature-monitoring.process-temperature.v1.q";
-    public static final String TEMPERATURE_ALERT_QUEUE = "temperature-monitoring.alert-temperature.v1.q";
+    public static final String TEMPERATURE_PROCESS = "temperature-monitoring.process-temperature.v1";
+    public static final String TEMPERATURE_PROCESS_Q = TEMPERATURE_PROCESS + ".q";
+    public static final String TEMPERATURE_PROCESS_DLQ = TEMPERATURE_PROCESS + ".dlq";
+
+    public static final String TEMPERATURE_ALERT_Q = "temperature-monitoring.alert-temperature.v1.q";
 
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter(ObjectMapper objectMapper) {
@@ -26,12 +32,20 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue temperatureProcessQueue() {
-        return QueueBuilder.durable(TEMPERATURE_PROCESS_QUEUE).build();
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("x-dead-letter-exchange", "");
+        arguments.put("x-dead-letter-routing-key", TEMPERATURE_PROCESS_DLQ);
+        return QueueBuilder.durable(TEMPERATURE_PROCESS_Q).withArguments(arguments).build();
+    }
+
+    @Bean
+    public Queue temperatureProcessDeadLetterQueue() {
+        return QueueBuilder.durable(TEMPERATURE_PROCESS_DLQ).build();
     }
 
     @Bean
     public Queue temperatureAlertQueue() {
-        return QueueBuilder.durable(TEMPERATURE_ALERT_QUEUE).build();
+        return QueueBuilder.durable(TEMPERATURE_ALERT_Q).build();
     }
 
     public FanoutExchange fanoutExchange() {

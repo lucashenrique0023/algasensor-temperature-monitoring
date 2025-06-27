@@ -22,13 +22,13 @@ public class RabbitMQListener {
     private final TemperatureMonitoringService temperatureMonitoringService;
     private final SensorAlertService sensorAlertService;
 
-    @RabbitListener(queues = TEMPERATURE_PROCESS_QUEUE, concurrency = "2-3")
+    @RabbitListener(queues = TEMPERATURE_PROCESS_Q, concurrency = "2-3")
     @SneakyThrows
     public void handleTemperatureProcess(@Payload TemperatureLogData temperatureLogData) {
         temperatureMonitoringService.processTemperatureReading(temperatureLogData);
     }
 
-    @RabbitListener(queues = TEMPERATURE_ALERT_QUEUE, concurrency = "2-3")
+    @RabbitListener(queues = TEMPERATURE_ALERT_Q, concurrency = "2-3")
     @SneakyThrows
     public void handleTemperatureAlert(@Payload TemperatureLogData temperatureLogData) {
         sensorAlertService.handleAlert(temperatureLogData);
